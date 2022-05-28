@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Tiles</title>
+    <style>
+        .body
+        {
+            margin:0px;
+            background-color: rgb(63, 63, 63);
+        }
+        .intro
+        {
+            margin: 0px;
+            padding:10px;
+            text-align: center;
+            text-decoration: wavy;
+            background-color: cornflowerblue;
+            font-display: small-caps;
+        }
+        .div1
+        {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+        .div2
+        {
+            width:450px;
+        }
+        .button
+        {
+            background-color: rgb(38, 30, 30);
+            padding:40px;
+            margin:10px;
+        }
+        .rules
+        {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+        .score
+        {
+            margin-left: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="body" id="body">
+    <h1 class="intro">Welcome to Piano tiles</h1>
+    <div class="div1" class="div2">
+        <div class="div2" id="div2"></div>
+    </div>
+    <div id="score" class="score"></div>
+    <div id="rules" class="rules">Your score is visible once you start playing <br>If your game is paused then you pressed the wrong box<br>Wait till all box lit up</div>
+    <script>
+        let level=1;
+        let click_loop=0;
+        let rand=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        let click=[];
+        //for(i=0;i<16;i++)
+        //{
+        //    rand[i]=Math.floor(Math.random() *16);
+        //}
+        function shuffleArray(rand)
+        {
+            for(var ij=15;ij>0;ij--)
+            {
+                var abc =Math.floor(Math.random() *(ij+1));
+                var temp =rand[ij];
+                rand[ij]=rand[abc];
+                rand[abc]=temp;
+            }
+
+            return rand
+        } 
+        rand=shuffleArray(rand);
+        div2=document.getElementById('div2');
+        for(j=0;j<16;j++)
+        {
+            div2.innerHTML+=`<button class="button" id="button${j}" onclick="clicked(${j})"></button>`;
+        }
+        function clicked(ind)
+        {
+            click[click_loop]=ind;
+            click_loop=click_loop+1;
+        }
+        function func_loop(level)
+        {
+            if(level<=16)
+            {
+                click=[];
+                for(k=0;k<level;k++)
+                {
+                    
+                    setTimeout(func,1000*k,rand[k]);
+                }
+                function func(ind2)
+                {
+                    document.getElementById(`button${ind2}`).style="background-color:blue;";
+                    setTimeout(func2,1000,ind2)
+                }
+                function func2(Ind1)
+                {
+                    document.getElementById(`button${Ind1}`).style="background-color:rgb(38, 30, 30);";
+                } 
+                setInterval(check,1200*level);
+            }
+            else
+            {
+                document.getElementById('score').innerHTML="<h1>You have succesfully completed the game <br> reset the page to play again</h1>";
+            }
+            
+        }
+        function check()
+        {
+            let temp=1;
+            for(l=0;l<level;l++)
+            {
+                if(rand[l]!=click[l])
+                {
+                    temp=0;
+                }
+            }
+            if(temp==1)
+            {
+                document.getElementById('score').innerHTML=`<h1>LEVEL-${level+1}</h1><h1>your score is ${level}</h1>`;
+                level=level+1;
+                click_loop=0;
+                func_loop(level);
+            }
+        }
+        func_loop(level);
+
+
+    </script>
+    
+</body>
+</html>
